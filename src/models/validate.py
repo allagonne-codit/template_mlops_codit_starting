@@ -1,32 +1,34 @@
 import pandas as pd
+from sklearn.metrics import accuracy_score
 import joblib
-from sklearn.metrics import classification_report
-import json
 import os
 
 def validate_model():
     """Validate the trained model on test data"""
+    # Load the model
+    model_path = 'models/model.joblib'
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found at {model_path}")
+    
+    model = joblib.load(model_path)
+    
     # Load test data
-    df = pd.read_csv('data/raw/synthetic_data.csv')
+    data_path = 'data/raw/synthetic_data.csv'
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(f"Data file not found at {data_path}")
+    
+    df = pd.read_csv(data_path)
     X = df.drop('target', axis=1)
     y = df['target']
     
-    # Load model
-    model = joblib.load('models/model.joblib')
-    
     # Make predictions
-    predictions = model.predict(X)
+    y_pred = model.predict(X)
     
-    # Generate validation report
-    report = classification_report(y, predictions, output_dict=True)
+    # Calculate accuracy
+    accuracy = accuracy_score(y, y_pred)
     
-    # Save validation results
-    os.makedirs('reports', exist_ok=True)
-    with open('reports/validation_report.json', 'w') as f:
-        json.dump(report, f, indent=2)
-    
-    return report
+    return accuracy
 
 if __name__ == "__main__":
-    report = validate_model()
-    print("Validation completed successfully!") 
+    accuracy = validate_model()
+    print(f"Validation completed successfully! Accuracy: {accuracy:.4f}") 

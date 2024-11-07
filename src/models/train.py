@@ -16,8 +16,7 @@ def load_data():
 def train_model():
     """Train the model and log metrics with MLflow"""
     # Set MLflow tracking URI
-    #mlflow.set_tracking_uri("http://mlflow:5000")
-    mlflow.set_tracking_uri("http://localhost:5000")
+    mlflow.set_tracking_uri("http://mlflow:5000")
 
     
     # Set up MLflow experiment
