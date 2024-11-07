@@ -1,0 +1,5 @@
+outs:
+- md5: 4e9315375db07cb8f7c81284bf316764  # This will be your actual MD5 hash
+  path: data/raw/synthetic_data.csv
+  size: 386840  # This will be your actual file size 
+  hash: md5

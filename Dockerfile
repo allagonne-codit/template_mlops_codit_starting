@@ -4,14 +4,20 @@ FROM python:3.9-slim
 # Set working directory
 WORKDIR /app
 
-# Copy requirements file
-COPY requirements.txt .
+# Install git and dvc dependencies
+RUN apt-get update && \
+    apt-get install -y git && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
+# Copy requirements and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the project files
 COPY . .
+
+# Remove existing .dvc directory and reinitialize DVC
+RUN rm -rf .dvc && dvc init --no-scm -f
 
 # Expose the port the app runs on
 EXPOSE 8000

@@ -4,4 +4,4 @@ registry_uri: sqlite:///mlflow.db
 
 experiment:
   name: synthetic-classification
-  artifact_location: ./mlruns/synthetic-classification 
+  artifact_location: ./mlruns/synthetic-classification

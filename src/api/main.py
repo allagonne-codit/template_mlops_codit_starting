@@ -1,14 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import joblib
+import pickle
 import numpy as np
 from typing import List
-import mlflow.pyfunc
 
 app = FastAPI(title="MLOps Demo API")
 
 # Load the model at startup
-model = joblib.load('models/model.joblib')
+with open('models/model.pkl', 'rb') as f:
+    model = pickle.load(f)
 
 class PredictionInput(BaseModel):
     features: List[float]

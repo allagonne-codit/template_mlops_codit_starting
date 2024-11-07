@@ -61,4 +61,4 @@ validate_model_task = PythonOperator(
 )
 
 # Set task dependencies
-generate_data_task >> train_model_task >> validate_model_task 
+generate_data_task >> train_model_task >> validate_model_task
