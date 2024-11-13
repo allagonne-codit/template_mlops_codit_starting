@@ -6,7 +6,7 @@ import os
 def validate_model():
     """Validate the trained model on test data"""
     # Load the model
-    model_path = 'models/model.joblib'
+    model_path = 'models/model.pkl'
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found at {model_path}")
     

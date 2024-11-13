@@ -4,101 +4,77 @@ from datetime import datetime, timedelta
 import mlflow
 import os
 
-# Add the project root to Python path
-import sys
-sys.path.append('/opt/airflow/dags')
-sys.path.append('/app')  # This is where our source code is mounted in the container
+# Define base paths
+APP_PATH = '/app'
+DATA_PATH = os.path.join(APP_PATH, 'data/raw')
+MODEL_PATH = os.path.join(APP_PATH, 'models')
 
-from src.data.synthetic import SyntheticDataGenerator
-from src.models.train import train_model
-from src.models.validate import validate_model
+# Ensure directories exist
+os.makedirs(DATA_PATH, exist_ok=True)
+os.makedirs(MODEL_PATH, exist_ok=True)
 
-default_args = {
-    'owner': 'mlops',
-    'depends_on_past': False,
-    'start_date': datetime(2024, 1, 1),
-    'email_on_failure': True,
-    'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5)
-}
+def generate_data(**context):
+    """Generate synthetic data"""
+    from src.data.synthetic import SyntheticDataGenerator
+    
+    generator = SyntheticDataGenerator()
+    generator.save_data(os.path.join(DATA_PATH, 'synthetic_data.csv'))
+    return "Data generated successfully"
 
+def train(**context):
+    """Train the model"""
+    from src.models.train import train_model
+    
+    mlflow.set_tracking_uri("http://mlflow:5000")
+    train_model(
+        data_path=os.path.join(DATA_PATH, 'synthetic_data.csv'),
+        model_path=os.path.join(MODEL_PATH, 'model.joblib')
+    )
+    return "Model trained successfully"
+
+def validate(**context):
+    """Validate the model"""
+    from src.models.validate import validate_model
+    
+    accuracy = validate_model(
+        data_path=os.path.join(DATA_PATH, 'synthetic_data.csv'),
+        model_path=os.path.join(MODEL_PATH, 'model.joblib')
+    )
+    print(f"Model validation accuracy: {accuracy}")
+    return f"Model validated with accuracy: {accuracy}"
+
+# DAG definition
 dag = DAG(
     'model_training_pipeline',
-    default_args=default_args,
-    description='ML model training pipeline',
+    default_args={
+        'owner': 'mlops',
+        'depends_on_past': False,
+        'start_date': datetime(2024, 1, 1),
+        'retries': 1,
+        'retry_delay': timedelta(minutes=5)
+    },
     schedule=timedelta(days=1),
     catchup=False
 )
 
-def generate_data(**context):
-    """Generate synthetic data"""
-    try:
-        # Change to the correct working directory
-        os.chdir('/app')
-        
-        generator = SyntheticDataGenerator()
-        generator.save_data()
-        
-        # Verify the file was created
-        if not os.path.exists('data/raw/synthetic_data.csv'):
-            raise FileNotFoundError("Data file was not created successfully")
-            
-    except Exception as e:
-        print(f"Error in generate_data: {str(e)}")
-        raise
-
-def train(**context):
-    """Train the model"""
-    try:
-        # Change to the correct working directory
-        os.chdir('/app')
-        
-        mlflow.set_tracking_uri("http://mlflow:5000")
-        train_model()
-        
-        # Verify the model was created
-        if not os.path.exists('models/model.joblib'):
-            raise FileNotFoundError("Model file was not created successfully")
-            
-    except Exception as e:
-        print(f"Error in train: {str(e)}")
-        raise
-
-def validate(**context):
-    """Validate the model"""
-    try:
-        # Change to the correct working directory
-        os.chdir('/app')
-        
-        accuracy = validate_model()
-        print(f"Model validation accuracy: {accuracy}")
-        
-    except Exception as e:
-        print(f"Error in validate: {str(e)}")
-        raise
-
-# Define tasks
+# Tasks
 generate_data_task = PythonOperator(
     task_id='generate_data',
     python_callable=generate_data,
-    provide_context=True,
     dag=dag
 )
 
 train_model_task = PythonOperator(
     task_id='train_model',
     python_callable=train,
-    provide_context=True,
     dag=dag
 )
 
 validate_model_task = PythonOperator(
     task_id='validate_model',
     python_callable=validate,
-    provide_context=True,
     dag=dag
 )
 
-# Set task dependencies
+# Set dependencies
 generate_data_task >> train_model_task >> validate_model_task
