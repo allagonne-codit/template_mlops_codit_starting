@@ -25,12 +25,12 @@ class SyntheticDataGenerator:
         
         return df
     
-    def save_data(self):
+    def save_data(self, filepath: str):
         """Generate and save data to CSV"""
         df = self.generate_data()
         
-        # Create data directory if it doesn't exist
-        os.makedirs('data/raw', exist_ok=True)
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
         
         # Save to CSV
-        df.to_csv('data/raw/synthetic_data.csv', index=False)
+        df.to_csv(filepath, index=False)

@@ -6,19 +6,21 @@ USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
+    git \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
-# Create directory for requirements
-RUN mkdir /requirements && \
-    chown -R airflow:root /requirements
+# Create necessary directories
+RUN mkdir -p /opt/airflow/db /opt/airflow/data/raw /opt/airflow/models && \
+    chown -R airflow:root /opt/airflow
 
-# Switch to airflow user for pip installations
 USER airflow
 
 # Copy requirements file
-COPY --chown=airflow:root requirements.txt /requirements/requirements.txt
+COPY requirements.txt /requirements.txt
 
 # Install Python packages
-RUN pip install --no-cache-dir -r /requirements/requirements.txt
+RUN pip install --no-cache-dir -r /requirements.txt
 
-# No need to switch back to airflow user since we're already airflow user
+# Create a .env file to set PYTHONPATH
+RUN echo "PYTHONPATH=/opt/airflow:/opt/airflow/dags:/app" > /opt/airflow/.env
