@@ -8,12 +8,11 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - mlflow_data:/mlruns
+      - mlflow_data:/mlflow/mlruns
       - mlflow_db:/mlflow/db
     environment:
-      - BACKEND_STORE_URI=/mlruns
-      - ARTIFACT_ROOT=/mlruns
-    user: "${AIRFLOW_UID:-50000}:0"
+      - BACKEND_STORE_URI=sqlite:///db/mlflow.db
+      - ARTIFACT_ROOT=/mlflow/mlruns
     networks:
       - airflow_network
     healthcheck:
@@ -21,6 +20,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   # FastAPI service
   api:
@@ -96,7 +96,7 @@ services:
       - ./src:/app/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
-      - mlflow_data:/mlruns
+      - mlflow_data:/mlflow/mlruns
     depends_on:
       mlflow:
         condition: service_healthy
@@ -126,7 +126,7 @@ services:
       - ./src:/app/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
-      - mlflow_data:/mlruns
+      - mlflow_data:/mlflow/mlruns
     depends_on:
       mlflow:
         condition: service_healthy

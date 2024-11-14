@@ -2,7 +2,7 @@ import pandas as pd
 import mlflow
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score
 import pickle
 import os
 
@@ -27,7 +27,11 @@ def train_model(data_path: str, model_path: str):
     mlflow.set_experiment(experiment_name)
     
     # Initialize model
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model = RandomForestClassifier(
+        n_estimators=100,
+        random_state=42,
+        n_jobs=-1
+    )
     
     # Train model
     with mlflow.start_run(experiment_id=experiment_id):
