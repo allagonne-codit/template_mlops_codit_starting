@@ -19,9 +19,6 @@ def load_model():
     logger.info(f"Attempting to load model from {MODEL_PATH}")
     if not os.path.exists(MODEL_PATH):
         logger.error(f"Model file not found at {MODEL_PATH}")
-        models_dir = os.path.dirname(MODEL_PATH)
-        if os.path.exists(models_dir):
-            logger.info(f"Contents of {models_dir}: {os.listdir(models_dir)}")
         raise FileNotFoundError(f"Model file not found at {MODEL_PATH}")
     try:
         with open(MODEL_PATH, 'rb') as f:
