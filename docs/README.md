@@ -6,7 +6,7 @@ This guide will walk you through transforming Jupyter notebooks into a structure
 
 ## Table of Contents
 
-1. [Setting Up the Environment](#setting-up-the-environment)
+1. [Set Up the Environment](#set-up-the-environment)
     - [Project Structure](#project-structure)
     - [Create a Python Virtual Environment](#create-a-python-virtual-environment)
     - [Version Control with Git](#version-control-with-git)
