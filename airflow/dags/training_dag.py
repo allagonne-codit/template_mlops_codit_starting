@@ -127,4 +127,5 @@ validate_model_task = PythonOperator(
 )
 
 # Set dependencies
-generate_data_task >> train_model_task >> validate_model_task
+generate_data_task.set_downstream(train_model_task)
+train_model_task.set_downstream(validate_model_task)

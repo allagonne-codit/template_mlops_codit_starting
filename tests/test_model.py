@@ -1,4 +1,3 @@
-import pytest
 import pandas as pd
 import numpy as np
 from src.models.train import train_model
@@ -37,3 +36,5 @@ def test_model_predictions():
     
     assert prediction.shape == (1,)
     assert prediction[0] in [0, 1] 
+    
+test_model_predictions()
