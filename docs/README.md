@@ -103,10 +103,12 @@ project-root/
 5. Basic git commands
 ### Basic Git Commands
 
-- **Create a New Branch:**
+- **Basic Git Commands**
   ```sh
-  git checkout -b feature/your-feature-name
-
+    - Create a new branch:
+      ```bash
+      git checkout -b feature/your-feature-name
+      ```
     - Commit Changes:
       ```bash
       git add .
