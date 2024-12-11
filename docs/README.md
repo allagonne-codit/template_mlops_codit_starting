@@ -10,19 +10,20 @@ This guide will walk you through transforming Jupyter notebooks into a structure
     - [Project Structure](#project-structure)
     - [Create a Python Virtual Environment](#create-a-python-virtual-environment)
     - [Version Control with Git](#version-control-with-git)
+    - [Basic Git Commands](#basic-git-commands)
     - [Data Versioning with DVC](#data-versioning-with-dvc)
 2. [Transforming Jupyter Notebooks](#transforming-jupyter-notebooks)
     - [Organize Code into Functions](#organize-code-into-functions)
     - [Example Transformation](#example-transformation)
     - [Document the Process](#document-the-process)
 3. [Detailed Explanation of Key Python Files](#detailed-explanation-of-key-python-files)
-    - [`src/data/synthetic.py`](#src-data-synthetic-py)
-    - [`src/models/train.py`](#src-models-train-py)
+    - [`src/data/synthetic.py`](###srcdatasyntheticpy)
+    - [`src/models/train.py`](###src-models-train-py)
     - [`src/models/validate.py`](#src-models-validate-py)
     - [`airflow/dags/training_dag.py`](#airflow-dags-training-dag-py)
 4. [Docker in MLOps Projects](#docker-in-mlops-projects)
-   - [Introduction to Docker](#introduction-to-docker)
-   - [Why Use Docker?](#why-use-docker)
+   - [What We are Building](#what-we-are-building)
+   - [What is Docker?](#what-is-docker)
    - [Docker in This Project](#docker-in-this-project)
    - [Controlling Training and DVC with Docker](#controlling-training-and-dvc-with-docker)
 5. [Running the Project](#running-the-project)
@@ -69,67 +70,74 @@ It should look like this:
     from code.visualstudio.com
 
 3. Create a python virtual environment
-    either with python -m venv venv command
-    or with ctrl+shift+P -> python : create new environment
-
+    either with ctrl+shift+P -> python : create new environment
+    or with 
+    ```sh
+    python -m venv venv
 4. Install and manage the required libraries
-    pip install -r requirements.txt for downloading required libraries of the project
-    pip freeze > requirements.txt to freeze the libraries as of the environment ones
+
+    downloading required libraries of the project:
+    ```sh
+    pip install -r requirements.txt
+    ```
+    freeze the libraries as of the environment
+    ```sh
+    pip freeze > requirements.txt
+    ```
 
 5. Activate the environment as the source
+    ```sh
     source venv/bin/activate
-
 ### Version Control with Git
 
 1. Initialize Git Repository
+    ```sh
     git init
-
 2. Create a .gitignore File
     Add common files and directories to ignore:
+    ```python
     __pycache__/
     *.pyc
     .DS_Store
     .venv/
     data/
     models/
-
 3. Commit Initial Structure
-   git add .
-   git commit -m "Initial project structure"
-
+    ```bash
+    git add .
+    git commit -m "Initial project structure"
 4. Push to a distant repo
+    ```bash
    git push --set-upstream origin 'feature/your_distant_branch_name'
-
-5. Basic git commands
 ### Basic Git Commands
 
 - **Create a new branch:**
-  ```sh
-      git checkout -b feature/your-feature-name
+    ```sh
+    git checkout -b feature/your-feature-name
 - **Commit changes:**
-  ```sh
-      git add .
-      git commit -m "Add feature description"
+    ```sh
+    git add .
+    git commit -m "Add feature description"
 - **Push changes:**
-  ```sh 
-      git push origin feature/your-feature-name
+    ```sh 
+    git push origin feature/your-feature-name
 - **Merge changes:**
     - Open a pull request to merge your feature branch into dev or main.
     - Review and test before merging.
 - **Pull Latest changes:**
-  ```sh 
-      git checkout dev
-      git pull origin dev
+    ```sh 
+    git checkout dev
+    git pull origin dev
 ### Data Versioning with DVC
 
 - **Initialize DVC**
-  ```sh 
+    ```sh 
     dvc init
 - **Track data files**
-  ```sh 
-     dvc add data/raw/synthetic_data.csv
+    ```sh 
+    dvc add data/raw/synthetic_data.csv
 - **Commit dvc changes**
-  ```sh 
+    ```sh 
     git add data/raw/synthetic_data.csv.dvc .dvc/config
     git commit -m "Track data with DVC"
 ##  Transforming Jupyter Notebooks
@@ -201,7 +209,7 @@ It should look like this:
             - 2. Split the data into features (X) and target (y)
             - 3. Initialize and train a RandomForestClassifier
             - 4. Save the trained model to models/model.joblib using joblib.
-    Example Usage
+    - Example Usage
         ```python
         train_model()
 - **src/models/validate.py**
@@ -233,9 +241,9 @@ It should look like this:
         - The DAG is automatically triggered by Airflow based on the schedule defined in the DAG configuration.
 
 
-# MLOps Best Practices Demo Project
+# Docker in MLOps Projects
 
-## What We're Building
+## What We are Building
 
 This project sets up a complete MLOps environment using Docker containers. Think of containers as isolated boxes, each running a specific part of our application:
 
@@ -254,7 +262,7 @@ This project sets up a complete MLOps environment using Docker containers. Think
    - Monitors job status
    - Handles workflow automation
 
-## What is Docker?
+## What is Docker
 
 Docker is like a shipping container for software. It packages everything your application needs to run (code, dependencies, settings) into a standardized unit called a container. This ensures that your application works the same way everywhere.
 
