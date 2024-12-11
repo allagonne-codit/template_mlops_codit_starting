@@ -10,16 +10,16 @@ This guide will walk you through transforming Jupyter notebooks into a structure
     - [Project Structure](#project-structure)
     - [Create a Python Virtual Environment](#create-a-python-virtual-environment)
     - [Version Control with Git](#version-control-with-git)
-   - [Data Versioning with DVC](#data-versioning-with-dvc)
+    - [Data Versioning with DVC](#data-versioning-with-dvc)
 2. [Transforming Jupyter Notebooks](#transforming-jupyter-notebooks)
-   - [Organize Code into Functions](#organize-code-into-functions)
-   - [Example Transformation](#example-transformation)
-   - [Document the Process](#document-the-process)
+    - [Organize Code into Functions](#organize-code-into-functions)
+    - [Example Transformation](#example-transformation)
+    - [Document the Process](#document-the-process)
 3. [Detailed Explanation of Key Python Files](#detailed-explanation-of-key-python-files)
-   - [`src/data/synthetic.py`](#srcdatasyntheticpy)
-   - [`src/models/train.py`](#srcmodelstrainpy)
-   - [`src/models/validate.py`](#srcmodelsvalidatepy)
-   - [`airflow/dags/training_dag.py`](#airflowdagstraining_dagpy)
+    - [`src/data/synthetic.py`](#srcdatasyntheticpy)
+    - [`src/models/train.py`](#srcmodelstrainpy)
+    - [`src/models/validate.py`](#srcmodelsvalidatepy)
+    - [`airflow/dags/training_dag.py`](#airflowdagstraining_dagpy)
 4. [Docker in MLOps Projects](#docker-in-mlops-projects)
    - [Introduction to Docker](#introduction-to-docker)
    - [Why Use Docker?](#why-use-docker)
@@ -106,23 +106,23 @@ project-root/
 - **Basic Git Commands**
   ```sh
     - Create a new branch:
-      ```bash
+      ```
       git checkout -b feature/your-feature-name
       ```
     - Commit Changes:
-      ```bash
+      ```
       git add .
       git commit -m "Add feature description"
       ```
     - Push Changes:
-      ```bash
+      ```
       git push origin feature/your-feature-name
       ```
     - Merge Changes:
       - Open a pull request to merge your feature branch into dev or main.
       - Review and test before merging.
     - Pull Latest Changes:
-      ```bash
+      ```
       git checkout dev
       git pull origin dev
       ```
@@ -145,21 +145,41 @@ project-root/
 1. Start from jupyter notebooks
 2. Identify reusable code blocks in your botebooks
 3. Convert them to functions and place them in appropriate modules under src/
-    Example Transformation:
-            from sklearn.datasets import make_classification
-            import pandas as pd
-            X, y = make_classification(n_samples=1000, n_features=20)
-            df = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(20)])
-            df['target'] = y
-    ->    # src/data/synthetic.py
-            from sklearn.datasets import make_classification
-            import pandas as pd
-            def generate_synthetic_data(n_samples=1000, n_features=20):
-                X, y = make_classification(n_samples=n_samples, n_features=n_features)
-                df = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(n_features)])
-                df['target'] = y
-                return df
-                ...
+
+### Example Transformation:
+    ```python
+        from sklearn.datasets import make_classification
+        import pandas as pd
+
+        X, y = make_classification(n_samples=1000, n_features=20)
+        df = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(20)])
+        df['target'] = y
+        ```
+    
+    Transformed Code in src/data/synthetic.py
+
+    ```python
+    from sklearn.datasets import make_classification
+    import pandas as pd
+    def generate_synthetic_data(n_samples=1000, n_features=20):
+        """
+        Generate synthetic classification data.
+
+        Parameters:
+        - n_samples: int, default=1000
+            The number of samples.
+        - n_features: int, default=20
+            The number of features.
+
+        Returns:
+        - df: DataFrame
+            A DataFrame containing the synthetic data with features and target.
+        """
+        X, y = make_classification(n_samples=n_samples, n_features=n_features)
+        df = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(n_features)])
+        df['target'] = y
+        return df
+        ```
 
 4. Document the process
     Use comments and docstrings to explain the purpose of each function.
