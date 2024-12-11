@@ -101,20 +101,29 @@ project-root/
    git push --set-upstream origin 'feature/your_distant_branch_name'
 
 5. Basic git commands
+### Basic Git Commands
 
-    •  Create a New Branch:
-    git checkout -b feature/your-feature-name
-    •  Commit Changes:
-    git add .
-    git commit -m "Add feature description"
-    •  Push Changes:
-    git push origin feature/your-feature-name
-    •  Merge Changes:
-    •  Open a pull request to merge your feature branch into dev or main.
-    •  Review and test before merging.
-    •  Pull Latest Changes:
-    git checkout dev
-    git pull origin dev
+- **Create a New Branch:**
+  ```sh
+  git checkout -b feature/your-feature-name
+
+    - Commit Changes:
+      ```bash
+      git add .
+      git commit -m "Add feature description"
+      ```
+    - Push Changes:
+      ```bash
+      git push origin feature/your-feature-name
+      ```
+    - Merge Changes:
+      - Open a pull request to merge your feature branch into dev or main.
+      - Review and test before merging.
+    - Pull Latest Changes:
+      ```bash
+      git checkout dev
+      git pull origin dev
+      ```
 
 ### Data Versioning with DVC
 
@@ -157,9 +166,11 @@ project-root/
 ### Detailed Explanation of Key Python Files
 
 1. src/data/synthetic.py
+
     This file is responsible for generating synthetic data for model training and validation.
+    
     Key Components
-        •  SyntheticDataGenerator Class:
+        •  SyntheticDataGenerator Class
         •  Purpose: To encapsulate the logic for generating synthetic classification data.
         •  Methods:
             •  __init__(self, n_samples=1000, n_features=20): Initializes the generator with the number of samples and features.
