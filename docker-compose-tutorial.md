@@ -221,7 +221,7 @@ These commands show how to manage the individual containers and the overall appl
 ### Exercise 3: Accessing Services
 
 * MLflow UI: `http://localhost:5000`
-* FastAPI: `http://localhost:8000`
+* FastAPI: `http://localhost:8000/docs`
 * Airflow: `http://localhost:8080`
 
 **Additional Explanation:**
