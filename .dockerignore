@@ -1,7 +1,0 @@
-.git
-.dvc
-__pycache__
-*.pyc
-venv/
-mlruns/
-airflow/logs/ 
