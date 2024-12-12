@@ -16,18 +16,18 @@ This guide will walk you through transforming Jupyter notebooks into a structure
     - [Organize Code into Functions](#organize-code-into-functions)
     - [Example Transformation](#example-transformation)
     - [Document the Process](#document-the-process)
-3. [Detailed Explanation of Key Python Files](#detailed-explanation-of-key-python-files)
-    - [`src/data/synthetic.py`](###srcdatasyntheticpy)
-    - [`src/models/train.py`](###src-models-train-py)
-    - [`src/models/validate.py`](#src-models-validate-py)
-    - [`airflow/dags/training_dag.py`](#airflow-dags-training-dag-py)
+    - [Detailed Explanation of Key Python Files](#detailed-explanation-of-key-python-files)
+3. [API Development](#api-development)
+    - [FastAPI Overview](#fastapi-overview)
+    - [Key Features](#key-features)
+    - [Example API structure](#example-api-structure)
+    - [Key Endpoints](#key-endpoints)
+    - [Running the API](#running-the-api)
 4. [Docker in MLOps Projects](#docker-in-mlops-projects)
    - [What We are Building](#what-we-are-building)
    - [What is Docker?](#what-is-docker)
    - [Docker in This Project](#docker-in-this-project)
-   - [Controlling Training and DVC with Docker](#controlling-training-and-dvc-with-docker)
-5. [Running the Project](#running-the-project)
-6. [Conclusion](#conclusion)
+
 
 ## Set up the environment
 
@@ -239,6 +239,64 @@ It should look like this:
             - Error Handling: Each task includes error handling to ensure that any issues are logged and raised appropriately.
     - Example Usage
         - The DAG is automatically triggered by Airflow based on the schedule defined in the DAG configuration.
+
+# API Development
+
+## FastAPI Overview
+
+FastAPI is a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints.
+
+## Key Features
+
+- Automatic Interactive API Documentation: FastAPI generates interactive API documentation using Swagger UI and ReDoc.
+-  Data Validation: Uses Pydantic for data validation and settings management.
+-  Asynchronous Support: Built on Starlette for asynchronous request handling.
+
+## Example API structure
+
+### src/api/main.py
+
+This file defines the API endpoints for serving the machine learning model.
+```python
+    from fastapi import FastAPI
+    import joblib
+    import numpy as np
+    app = FastAPI()
+    # Load the trained model
+    model = joblib.load("models/model.joblib")
+    @app.get("/")
+    def read_root():
+        return {"message": "Welcome to the ML model API"}
+    @app.post("/predict/")
+    def predict(features: list):
+        """Predict using the trained model"""
+        features_array = np.array(features).reshape(1, -1)
+        prediction = model.predict(features_array)
+        return {"prediction": prediction.tolist()}
+```
+## Key Endpoints
+
+- Root Endpoint:
+- Path: /
+- Method: GET
+- Description: Returns a welcome message.
+- Prediction Endpoint:
+- Path: /predict/
+- Method: POST
+- Description: Accepts a list of features and returns a prediction from the trained model.
+- Example Request:
+    ```python
+     {
+       "features": [0.1, 0.2, 0.3, ..., 0.9]
+     }
+## Running the API
+
+- Start the API:
+    ```sh
+    uvicorn src.api.main:app --reload
+- Access the API Documentation:
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redocThis setup provides a robust framework for developing, testing, and deploying machine learning models as APIs, ensuring consistency and scalability.
 
 
 # Docker in MLOps Projects
